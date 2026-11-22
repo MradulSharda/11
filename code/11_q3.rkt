@@ -5,7 +5,7 @@
 ;; Group: 11
 ;;
 ;; Pure functional implementation using strictly allowed built-ins:
-;; define, car, cadr, caddr, null?, and, not.
+;; define, car, cadr, caddr, null?, and, not, if, cons.
 ;; =========================================================================
 
 ;; -------------------------------------------------------------------------
@@ -34,3 +34,50 @@
   (and (not (null? tree))
        (null? (cadr tree))
        (null? (caddr tree))))
+
+;; -------------------------------------------------------------------------
+;; Traversal Helpers (Accumulator-based, O(N) time, zero append / reverse)
+;;
+;; Since append and reverse are forbidden, each helper traverses the subtrees
+;; and threads the accumulator directly using cons in pure linear time.
+;; -------------------------------------------------------------------------
+
+;; tree->inorder-acc: produces (left, node, right) prepended onto acc
+(define (tree->inorder-acc tree acc)
+  (if (null? tree)
+      acc
+      (tree->inorder-acc
+       (cadr tree)
+       (cons (car tree)
+             (tree->inorder-acc (caddr tree) acc)))))
+
+;; tree->inorder: returns list of values in inorder
+(define (tree->inorder tree)
+  (tree->inorder-acc tree '()))
+
+;; tree->preorder-acc: produces (node, left, right) prepended onto acc
+(define (tree->preorder-acc tree acc)
+  (if (null? tree)
+      acc
+      (cons (car tree)
+            (tree->preorder-acc
+             (cadr tree)
+             (tree->preorder-acc (caddr tree) acc)))))
+
+;; tree->preorder: returns list of values in preorder
+(define (tree->preorder tree)
+  (tree->preorder-acc tree '()))
+
+;; tree->postorder-acc: produces (left, right, node) prepended onto acc
+(define (tree->postorder-acc tree acc)
+  (if (null? tree)
+      acc
+      (tree->postorder-acc
+       (cadr tree)
+       (tree->postorder-acc
+        (caddr tree)
+        (cons (car tree) acc)))))
+
+;; tree->postorder: returns list of values in postorder
+(define (tree->postorder tree)
+  (tree->postorder-acc tree '()))
