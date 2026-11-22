@@ -24,3 +24,30 @@ valid_template([
     permutation([research, development, design, testing], [D1, D2, D3, D4]),
     permutation([python, java, 'c++', javascript], [L1, L2, L3, L4]),
     permutation(['AI', web, embedded, data], [P1, P2, P3, P4]).
+
+%!  clue(+Index, +Solution) is semidet.
+%
+%   Verifies individual clues against a fully instantiated Solution list.
+%
+%   Clue 1: The friend who prefers the AI project does not work in research
+%           and is not Dana.
+clue(1, Solution) :-
+    member(p(Name, Dept, _, 'AI'), Solution),
+    Dept \= research,
+    Name \= 'Dana'.
+
+%   Clue 2: Alex does not work in development and does not prefer C++.
+clue(2, Solution) :-
+    member(p('Alex', Dept, Lang, _), Solution),
+    Dept \= development,
+    Lang \= 'c++'.
+
+%   Clue 3: The friend working in the testing department likes Python.
+clue(3, Solution) :-
+    member(p(_, testing, python, _), Solution).
+
+%   Clue 4: Ben prefers web projects and does not work in testing.
+clue(4, Solution) :-
+    member(p('Ben', Dept, _, web), Solution),
+    Dept \= testing.
+
