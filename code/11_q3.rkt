@@ -91,3 +91,19 @@
 (define (print-inorder tree)
   (display (tree->inorder tree))
   (newline))
+
+;; -------------------------------------------------------------------------
+;; Task S1.b: print-all-traversals
+;; Prints three lines using display, each ending with a newline:
+;;   Line 1: inorder list (left, node, right)
+;;   Line 2: preorder list (node, left, right)
+;;   Line 3: postorder list (left, right, node)
+;; For '(), prints () on all three lines.
+;; -------------------------------------------------------------------------
+(define (print-all-traversals tree)
+  (display (tree->inorder tree))
+  (newline)
+  (display (tree->preorder tree))
+  (newline)
+  (display (tree->postorder tree))
+  (newline))
