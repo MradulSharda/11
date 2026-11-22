@@ -89,5 +89,26 @@ satisfies_all_clues([ClueIndex|Rest], Solution) :-
 count_solutions(Active, N) :-
     aggregate_all(count, (valid_template(Solution), satisfies_all_clues(Active, Solution)), N).
 
+%!  print_solution(+Solution) is det.
+%
+%   Prints each friend's attributes in exactly the requested format:
+%   <Name> = [<Dept>, <Lang>, <Proj>]
+%   Order of clauses: base case followed by recursive case.
+print_solution([]).
+print_solution([p(Name, Dept, Lang, Proj)|Rest]) :-
+    format('~w = [~w, ~w, ~w]~n', [Name, Dept, Lang, Proj]),
+    print_solution(Rest).
+
+%!  main is det.
+%
+%   Derives one solution satisfying all clues 1 through 8 and prints it
+%   in exactly four lines in the order of Alex, Ben, Carla, Dana.
+main :-
+    valid_template(Solution),
+    satisfies_all_clues([1, 2, 3, 4, 5, 6, 7, 8], Solution),
+    !,
+    print_solution(Solution).
+
+
 
 
