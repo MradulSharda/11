@@ -81,3 +81,13 @@
 ;; tree->postorder: returns list of values in postorder
 (define (tree->postorder tree)
   (tree->postorder-acc tree '()))
+
+;; -------------------------------------------------------------------------
+;; Task S1.a: print-inorder
+;; Prints on one line using display the list of values of tree in inorder
+;; (left subtree, node, right subtree), followed by a newline.
+;; For '(), prints () followed by a newline.
+;; -------------------------------------------------------------------------
+(define (print-inorder tree)
+  (display (tree->inorder tree))
+  (newline))
