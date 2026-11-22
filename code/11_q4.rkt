@@ -35,17 +35,30 @@
         (loop (cdr rem) (cons (f (car rem)) acc)))))
 
 ;; -------------------------------------------------------------------------
-;; Task S2.b: insert-if-short (Direct Implementation)
+;; Task S2.c: make-inserter
+;; Higher-order function that takes an atom x and a length predicate len-ok?.
+;; Returns a function of one argument (lst) that inserts x at the front of
+;; every list at every level of nesting whose original length satisfies len-ok?.
+;; -------------------------------------------------------------------------
+(define (make-inserter x len-ok?)
+  (letrec ((transform
+            (lambda (lst)
+              (let ((qualifies? (len-ok? (my-length lst)))
+                    (mapped (my-map (lambda (elem)
+                                      (if (or (pair? elem) (null? elem))
+                                          (transform elem)
+                                          elem))
+                                    lst)))
+                (if qualifies?
+                    (cons x mapped)
+                    mapped)))))
+    transform))
+
+;; -------------------------------------------------------------------------
+;; Task S2.b & S2.c: insert-if-short
 ;; Inserts atom x at the front of every list (at all nesting levels) whose
 ;; original length before any insertion was strictly less than n.
+;; Defined using make-inserter with a length predicate (< len n).
 ;; -------------------------------------------------------------------------
 (define (insert-if-short x lst n)
-  (let ((qualifies? (< (my-length lst) n))
-        (mapped (my-map (lambda (elem)
-                          (if (or (pair? elem) (null? elem))
-                              (insert-if-short x elem n)
-                              elem))
-                        lst)))
-    (if qualifies?
-        (cons x mapped)
-        mapped)))
+  ((make-inserter x (lambda (len) (< len n))) lst))
