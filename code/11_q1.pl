@@ -1,4 +1,5 @@
 :- use_module(library(lists)).
+:- use_module(library(aggregate)).
 
 %!  valid_template(-Solution) is nondet.
 %
@@ -71,5 +72,22 @@ clue(7, Solution) :-
 clue(8, Solution) :-
     member(p(_, research, Lang, data), Solution),
     Lang \= javascript.
+
+%!  satisfies_all_clues(+Active, +Solution) is semidet.
+%
+%   Base case: an empty list of active clues is vacuously satisfied.
+satisfies_all_clues([], _).
+%   Recursive case: verifies the head clue against Solution and recurses on the tail.
+satisfies_all_clues([ClueIndex|Rest], Solution) :-
+    clue(ClueIndex, Solution),
+    satisfies_all_clues(Rest, Solution).
+
+%!  count_solutions(+Active, -N) is det.
+%
+%   N is the number of solutions from valid_template/1 that satisfy all clues
+%   specified in the Active list while ignoring all other clues.
+count_solutions(Active, N) :-
+    aggregate_all(count, (valid_template(Solution), satisfies_all_clues(Active, Solution)), N).
+
 
 
