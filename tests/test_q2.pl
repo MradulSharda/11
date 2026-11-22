@@ -1,13 +1,9 @@
 :- use_module(library(lists)).
 
-% Load 11_q2.pl if not already loaded in the environment
+% Load 11_q2.pl relative to this test file if not already loaded
 :- (   current_predicate(generate_equation/2)
    ->  true
-   ;   exists_file('code/11_q2.pl')
-   ->  consult('code/11_q2.pl')
-   ;   exists_file('../code/11_q2.pl')
-   ->  consult('../code/11_q2.pl')
-   ;   true
+   ;   ensure_loaded('../code/11_q2.pl')
    ).
 
 %% =============================================================================
@@ -99,7 +95,7 @@ test_case('edge_division_by_zero_rejected', (
 
 test_case('edge_division_by_zero_safe_handling', (
     all_equations([4, 0, 4], Es),
-    Es == ["4+0=4", "4-0=4"],
+    Es == ["4+0=4", "4-0=4", "4=0+4"],
     \+ member("4/0=4", Es)
 )).
 
