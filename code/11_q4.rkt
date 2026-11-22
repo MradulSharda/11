@@ -62,3 +62,16 @@
 ;; -------------------------------------------------------------------------
 (define (insert-if-short x lst n)
   ((make-inserter x (lambda (len) (< len n))) lst))
+
+;; -------------------------------------------------------------------------
+;; Task S2.a: print-insert-result
+;; Reads x, lst, and n in order from standard input using read.
+;; Calls (insert-if-short x lst n) and prints the result using display
+;; followed by a newline. Prints no prompt or any other text.
+;; -------------------------------------------------------------------------
+(define (print-insert-result)
+  (let* ((x (read))
+         (lst (read))
+         (n (read)))
+    (display (insert-if-short x lst n))
+    (newline)))
