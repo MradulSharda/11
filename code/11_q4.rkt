@@ -33,3 +33,19 @@
     (if (null? rem)
         (my-reverse acc)
         (loop (cdr rem) (cons (f (car rem)) acc)))))
+
+;; -------------------------------------------------------------------------
+;; Task S2.b: insert-if-short (Direct Implementation)
+;; Inserts atom x at the front of every list (at all nesting levels) whose
+;; original length before any insertion was strictly less than n.
+;; -------------------------------------------------------------------------
+(define (insert-if-short x lst n)
+  (let ((qualifies? (< (my-length lst) n))
+        (mapped (my-map (lambda (elem)
+                          (if (or (pair? elem) (null? elem))
+                              (insert-if-short x elem n)
+                              elem))
+                        lst)))
+    (if qualifies?
+        (cons x mapped)
+        mapped)))
