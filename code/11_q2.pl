@@ -47,3 +47,56 @@ gen_equation(List, LTree, RTree) :-
     gen_expr([R|Rs], RTree, RVal),
     LVal =:= RVal.
 
+%% Operator precedence for canonical formatting.
+%  * and / bind tighter (precedence 2) than + and - (precedence 1).
+op_prec(+, 1).
+op_prec(-, 1).
+op_prec(*, 2).
+op_prec(/, 2).
+
+%% expr_to_string(+Tree, -String)
+%  Converts an arithmetic expression tree into an SWI-Prolog string with no
+%  spaces, applying parentheses according to the canonical precedence rules.
+expr_to_string(N, String) :-
+    integer(N), !,
+    number_string(N, String).
+expr_to_string(Tree, String) :-
+    Tree =.. [Op, Left, Right],
+    op_prec(Op, ParentPrec),
+    expr_to_string(Left, LeftRaw),
+    expr_to_string(Right, RightRaw),
+    format_left(Left, ParentPrec, LeftRaw, LeftStr),
+    format_right(Right, ParentPrec, RightRaw, RightStr),
+    atomics_to_string([LeftStr, Op, RightStr], String).
+
+%% format_left(+SubTree, +ParentPrec, +RawStr, -FormattedStr)
+%  A left operand is parenthesized iff its top operator has strictly
+%  lower precedence than its parent operator. Single numbers are never parenthesized.
+format_left(SubTree, ParentPrec, RawStr, FormattedStr) :-
+    compound(SubTree),
+    SubTree =.. [Op, _, _],
+    op_prec(Op, SubPrec),
+    SubPrec < ParentPrec, !,
+    atomics_to_string(['(', RawStr, ')'], FormattedStr).
+format_left(_, _, RawStr, RawStr).
+
+%% format_right(+SubTree, +ParentPrec, +RawStr, -FormattedStr)
+%  A right operand is parenthesized iff its top operator has the same or
+%  lower precedence than its parent operator. Single numbers are never parenthesized.
+format_right(SubTree, ParentPrec, RawStr, FormattedStr) :-
+    compound(SubTree),
+    SubTree =.. [Op, _, _],
+    op_prec(Op, SubPrec),
+    SubPrec =< ParentPrec, !,
+    atomics_to_string(['(', RawStr, ')'], FormattedStr).
+format_right(_, _, RawStr, RawStr).
+
+%% format_equation(+LTree, +RTree, -Str)
+%  Converts left and right expression trees into canonical strings and
+%  joins them with '=' into an SWI-Prolog string "L=R".
+format_equation(LTree, RTree, Str) :-
+    expr_to_string(LTree, LStr),
+    expr_to_string(RTree, RStr),
+    atomics_to_string([LStr, '=', RStr], Str).
+
+
