@@ -102,7 +102,7 @@
   (check "make-inserter with custom predicate (even length)"
          (equal? ((make-inserter 'even (lambda (len) (= (remainder len 2) 0)))
                   '((1 2) (1 2 3) ()))
-                 '(even (even 1 2) (1 2 3) (even)))))
+                 '((even 1 2) (1 2 3) (even)))))
 
 ;; Test Suite 3: Stress Tests (Depth 100 and 10,000 Elements)
 (define (test-stress)
