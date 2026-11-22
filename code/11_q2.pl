@@ -99,4 +99,33 @@ format_equation(LTree, RTree, Str) :-
     expr_to_string(RTree, RStr),
     atomics_to_string([LStr, '=', RStr], Str).
 
+%% =============================================================================
+%% Public API
+%% =============================================================================
+
+%% generate_equation(+List, -Equation)
+%  Unifies Equation with one valid arithmetic equation string for List.
+%  Fails if List has length 0 or 1, or if no valid equation exists.
+generate_equation(List, Equation) :-
+    gen_equation(List, LTree, RTree),
+    format_equation(LTree, RTree, Equation).
+
+%% all_equations(+List, -Equations)
+%  Unifies Equations with the list of all valid arithmetic equations for List,
+%  without duplicates, sorted by sort/2 (standard order of terms).
+%  If no valid equation exists (including for length 0 or 1), Equations = [].
+all_equations(List, Equations) :-
+    findall(Eq, (
+        gen_equation(List, LTree, RTree),
+        format_equation(LTree, RTree, Eq)
+    ), RawEquations),
+    sort(RawEquations, Equations).
+
+%% count_equations(+List, -N)
+%  N is the total number of unique valid equations for List.
+count_equations(List, N) :-
+    all_equations(List, Equations),
+    length(Equations, N).
+
+
 
