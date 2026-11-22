@@ -34,3 +34,16 @@ combine_expr(LeftExpr, LeftVal, RightExpr, RightVal, LeftExpr / RightExpr, Value
     RightVal =\= 0,
     LeftVal mod RightVal =:= 0,
     Value is LeftVal // RightVal.
+
+%% gen_equation(+List, -LTree, -RTree)
+%  True when LTree and RTree are valid arithmetic expression trees over a
+%  non-empty prefix and non-empty suffix of List respectively, such that
+%  both expressions evaluate to the same integer value.
+%  Fails if List has fewer than 2 elements.
+gen_equation(List, LTree, RTree) :-
+    List = [_, _ | _],
+    append([L|Ls], [R|Rs], List),
+    gen_expr([L|Ls], LTree, LVal),
+    gen_expr([R|Rs], RTree, RVal),
+    LVal =:= RVal.
+
