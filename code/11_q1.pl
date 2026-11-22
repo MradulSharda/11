@@ -73,6 +73,11 @@ clue(8, Solution) :-
     member(p(_, research, Lang, data), Solution),
     Lang \= javascript.
 
+% CLUE 9: The friend who prefers the AI project works in the testing department.
+clue(9, Solution) :-
+    member(p(_, testing, _, 'AI'), Solution).
+
+
 %!  satisfies_all_clues(+Active, +Solution) is semidet.
 %
 %   Base case: an empty list of active clues is vacuously satisfied.
